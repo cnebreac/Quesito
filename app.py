@@ -22,16 +22,14 @@ VALES = [
 ]
 
 # =========================
-# Funciones con PIN
+# Funciones con PIN / JSON
 # =========================
 
 def get_json_path(pin: str) -> Path:
-    """Devuelve la ruta del JSON personal según el PIN."""
     safe_pin = pin.replace(" ", "_").replace("/", "_")
     return Path(f"estado_vales_{safe_pin}.json")
 
 def cargar_estado(pin: str):
-    """Carga los vales usados desde el JSON vinculado al PIN."""
     path = get_json_path(pin)
     if not path.exists():
         return set()
@@ -43,7 +41,6 @@ def cargar_estado(pin: str):
         return set()
 
 def guardar_estado(pin: str, vales_usados: set):
-    """Guarda los vales usados en el JSON vinculado al PIN."""
     path = get_json_path(pin)
     with path.open("w", encoding="utf-8") as f:
         json.dump({"vales_usados": list(vales_usados)}, f, ensure_ascii=False, indent=2)
@@ -70,7 +67,7 @@ if st.session_state.pin is None:
             st.rerun()
     st.stop()
 
-# A partir de aquí ya tenemos PIN
+# A partir de aquí ya hay PIN
 pin = st.session_state.pin
 vales_usados = cargar_estado(pin)
 
@@ -78,7 +75,7 @@ if "vale_a_confirmar" not in st.session_state:
     st.session_state.vale_a_confirmar = None
 
 # =========================
-# Interfaz principal
+# Cabecera
 # =========================
 
 st.markdown("# Vales contigo 💛")
@@ -86,16 +83,16 @@ st.caption(f"PIN activo: **{pin}**")
 
 st.write(
     """
-    - Los vales no usados aparecen en normal.  
+    - Los vales no usados aparecen normales, con botón para usarlos.  
     - Los vales usados se ven en gris y marcados como usados.  
-    - Todo se guarda según tu PIN: si entras otro día con el mismo PIN, verás el mismo estado.
+    - El estado se guarda según tu PIN.
     """
 )
 
 st.divider()
 
 # =========================
-# Mostrar tarjetas en cuadrícula
+# Tarjetas en cuadrícula
 # =========================
 
 n_cols = 2
@@ -108,18 +105,40 @@ for row in rows:
         vale = next(v for v in VALES if v["id"] == vid)
         usado = vid in vales_usados
 
+        if usado:
+            bg = "#f3f3f3"
+            txt = "#777777"
+            extra = '<p style="margin:0; font-size:0.85rem; color:#999999;">Ya has usado este vale.</p>'
+        else:
+            bg = "#ffffff"
+            txt = "#222222"
+            extra = ""
+
         with col:
-            card = st.container()
-            with card:
-                if usado:
-                    st.markdown(f"#### {vale['titulo']}")
-                    st.caption("Ya has usado este vale")
-                    st.write(f":grey[{vale['texto']}]")
-                else:
-                    st.markdown(f"#### {vale['titulo']}")
-                    st.write(vale["texto"])
-                    if st.button("Usar este vale", key=f"usar_{vid}"):
-                        st.session_state.vale_a_confirmar = vid
+            html_card = f"""
+            <div style="
+                border-radius: 14px;
+                padding: 16px;
+                border: 1px solid #dddddd;
+                box-shadow: 0 0 10px rgba(0,0,0,0.04);
+                background-color: {bg};
+                min-height: 140px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            ">
+                <div>
+                    <h4 style="margin:0 0 0.5rem 0; color:{txt};">{vale['titulo']}</h4>
+                    <p style="margin:0 0 0.75rem 0; color:{txt};">{vale['texto']}</p>
+                </div>
+                {extra}
+            </div>
+            """
+            st.markdown(html_card, unsafe_allow_html=True)
+
+            if not usado:
+                if st.button("Usar este vale", key=f"usar_{vid}", use_container_width=True):
+                    st.session_state.vale_a_confirmar = vid
 
 st.divider()
 
@@ -134,7 +153,7 @@ if vid_conf is not None and vid_conf not in vales_usados:
 
     st.info(
         f"¿Seguro que quieres usar el vale **{vale_conf['titulo']}**?\n\n"
-        f"\"{vale_conf['texto']}\""
+        f"\"{vale_conf['texto']}\"",
     )
 
     c1, c2 = st.columns(2)
@@ -151,3 +170,22 @@ if vid_conf is not None and vid_conf not in vales_usados:
         if st.button("No, cancelar"):
             st.session_state.vale_a_confirmar = None
 
+# =========================
+# Sidebar: ver / descargar JSON
+# =========================
+
+with st.sidebar.expander("Zona para mí (estado JSON)"):
+    st.write("Vales usados (ids):", list(vales_usados))
+
+    json_data = json.dumps(
+        {"vales_usados": list(vales_usados)},
+        ensure_ascii=False,
+        indent=2,
+    )
+
+    st.download_button(
+        "Descargar JSON",
+        data=json_data,
+        file_name=f"estado_vales_{pin}.json",
+        mime="application/json",
+    )
