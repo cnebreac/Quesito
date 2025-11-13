@@ -54,20 +54,19 @@ if "pin" not in st.session_state:
 
 if st.session_state.pin is None:
     st.markdown("## Introduce tu PIN")
-    pin_input = st.text_input(
-        "PIN (puede ser texto, números o lo que queráis):",
-        type="password",
-    )
+    pin_input = st.text_input("PIN:", type="password")
 
     if st.button("Entrar"):
         if pin_input.strip() == "":
             st.warning("El PIN no puede estar vacío.")
+        elif pin_input != "quesito":
+            st.error("PIN incorrecto.")
         else:
-            st.session_state.pin = pin_input
+            st.session_state.pin = "quesito"
             st.rerun()
+
     st.stop()
 
-# A partir de aquí ya hay PIN
 pin = st.session_state.pin
 vales_usados = cargar_estado(pin)
 
@@ -81,14 +80,6 @@ if "vale_a_confirmar" not in st.session_state:
 st.markdown("# Vales contigo 💛")
 st.caption(f"PIN activo: **{pin}**")
 
-st.write(
-    """
-    - Los vales no usados aparecen normales, con botón para usarlos.  
-    - Los vales usados se ven en gris y marcados como usados.  
-    - El estado se guarda según tu PIN.
-    """
-)
-
 st.divider()
 
 # =========================
@@ -97,24 +88,26 @@ st.divider()
 
 n_cols = 2
 ids = [v["id"] for v in VALES]
-rows = [ids[i:i + n_cols] for i in range(0, len(ids), n_cols)]
+rows = [ids[i:i+n_cols] for i in range(0, len(ids), n_cols)]
 
 for row in rows:
     cols = st.columns(len(row))
+
     for col, vid in zip(cols, row):
         vale = next(v for v in VALES if v["id"] == vid)
         usado = vid in vales_usados
+        seleccionado = st.session_state.vale_a_confirmar == vid
 
-        if usado:
-            bg = "#f3f3f3"
-            txt = "#777777"
-            extra = '<p style="margin:0; font-size:0.85rem; color:#999999;">Ya has usado este vale.</p>'
-        else:
-            bg = "#ffffff"
-            txt = "#222222"
-            extra = ""
-
+        # ------------ TARJETA ------------
         with col:
+            bg = "#f3f3f3" if usado else "#ffffff"
+            txt = "#777" if usado else "#222"
+
+            extra = (
+                '<p style="margin:0; font-size:0.85rem; color:#999;">Ya has usado este vale.</p>'
+                if usado else ""
+            )
+
             html_card = f"""
             <div style="
                 border-radius: 14px;
@@ -123,66 +116,69 @@ for row in rows:
                 box-shadow: 0 0 10px rgba(0,0,0,0.04);
                 background-color: {bg};
                 min-height: 140px;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
             ">
-                <div>
-                    <h4 style="margin:0 0 0.5rem 0; color:{txt};">{vale['titulo']}</h4>
-                    <p style="margin:0 0 0.75rem 0; color:{txt};">{vale['texto']}</p>
-                </div>
+                <h4 style="margin:0 0 .5rem 0; color:{txt};">{vale['titulo']}</h4>
+                <p style="margin:0 0 .75rem 0; color:{txt};">{vale['texto']}</p>
                 {extra}
             </div>
             """
             st.markdown(html_card, unsafe_allow_html=True)
 
-            if not usado:
+            # ------------ BOTÓN USAR ------------
+            if not usado and not seleccionado:
                 if st.button("Usar este vale", key=f"usar_{vid}", use_container_width=True):
                     st.session_state.vale_a_confirmar = vid
+                    st.rerun()
+
+            # ------------ CONFIRMACIÓN JUSTO DEBAJO ------------
+            if seleccionado:
+                st.info(
+                    f"¿Quieres usar **{vale['titulo']}**?\n\n“{vale['texto']}”",
+                )
+                c1, c2 = st.columns(2)
+
+                with c1:
+                    if st.button("Sí, gastar", key=f"confirmar_{vid}"):
+                        vales_usados.add(vid)
+                        guardar_estado(pin, vales_usados)
+                        st.session_state.vale_a_confirmar = None
+                        st.rerun()
+
+                with c2:
+                    if st.button("No, cancelar", key=f"cancelar_{vid}"):
+                        st.session_state.vale_a_confirmar = None
+                        st.rerun()
 
 st.divider()
 
 # =========================
-# Confirmación de uso
+# Sidebar: ver / descargar / reactivar
 # =========================
 
-vid_conf = st.session_state.get("vale_a_confirmar", None)
+with st.sidebar.expander("Zona para mí (estado de vales)"):
+    usados_sorted = sorted(list(vales_usados))
+    st.write("Vales usados:", usados_sorted)
 
-if vid_conf is not None and vid_conf not in vales_usados:
-    vale_conf = next(v for v in VALES if v["id"] == vid_conf)
+    # Reactivar
+    if usados_sorted:
+        opciones = {vid: next(v["titulo"] for v in VALES if v["id"] == vid) for vid in usados_sorted}
+        seleccion = st.multiselect(
+            "Selecciona vales para reactivar:",
+            options=list(opciones.keys()),
+            format_func=lambda vid: opciones[vid],
+        )
 
-    st.info(
-        f"¿Seguro que quieres usar el vale **{vale_conf['titulo']}**?\n\n"
-        f"\"{vale_conf['texto']}\"",
-    )
-
-    c1, c2 = st.columns(2)
-
-    with c1:
-        if st.button("Sí, gastar"):
-            vales_usados.add(vid_conf)
+        if st.button("Reactivar seleccionados"):
+            for vid in seleccion:
+                vales_usados.discard(vid)
             guardar_estado(pin, vales_usados)
-            st.session_state.vale_a_confirmar = None
-            st.success("Vale usado")
+            st.success("Vales reactivados")
             st.rerun()
+    else:
+        st.caption("No hay vales usados todavía.")
 
-    with c2:
-        if st.button("No, cancelar"):
-            st.session_state.vale_a_confirmar = None
-
-# =========================
-# Sidebar: ver / descargar JSON
-# =========================
-
-with st.sidebar.expander("Zona para mí (estado JSON)"):
-    st.write("Vales usados (ids):", list(vales_usados))
-
-    json_data = json.dumps(
-        {"vales_usados": list(vales_usados)},
-        ensure_ascii=False,
-        indent=2,
-    )
-
+    # Descargar JSON
+    json_data = json.dumps({"vales_usados": list(vales_usados)}, ensure_ascii=False, indent=2)
     st.download_button(
         "Descargar JSON",
         data=json_data,
