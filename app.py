@@ -19,6 +19,7 @@ VALES = [
     {"id": 7, "titulo": "Tú eliges el plan", "texto": "Vale por elegir tú el plan que quieras, sin rechistar."},
     {"id": 8, "titulo": "Un beso cada vez que sonrías", "texto": "Vale por un beso cada vez que sonrías (sin límite de usos)."},
     {"id": 9, "titulo": "Día sin discutir", "texto": "Vale por un día sin discutir, aunque me lleves la contraria (un poco 😅)."},
+    {"id": 10, "titulo": "Ir a tirar aviones", "texto":"Por peticion del Queso Alto"}
 ]
 
 
