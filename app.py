@@ -3,7 +3,7 @@ import streamlit as st
 import json
 from pathlib import Path
 
-st.set_page_config(page_title="Vales contigo", page_icon="💛", layout="centered")
+st.set_page_config(page_title="Vales contigo", page_icon="💙", layout="centered")
 
 # =========================
 # Definición de vales
@@ -100,13 +100,15 @@ for row in rows:
 
         # ------------ TARJETA ------------
         with col:
-            bg = "#f3f3f3" if usado else "#ffffff"
-            txt = "#777" if usado else "#222"
-
-            extra = (
-                '<p style="margin:0; font-size:0.85rem; color:#999;">Ya has usado este vale.</p>'
-                if usado else ""
-            )
+            # Azul pastel para vales
+            if usado:
+                bg = "#DCE6F0"   # azul pastel apagado para usados
+                txt = "#6B7A8C"  # gris-azulado para el texto
+                extra = '<p style="margin:0; font-size:0.85rem; color:#6B7A8C;">Ya has usado este vale.</p>'
+            else:
+                bg = "#E6F0FA"   # azul pastel claro para vales disponibles
+                txt = "#1F3B57"  # azul oscuro suave para el texto
+                extra = ""
 
             html_card = f"""
             <div style="
