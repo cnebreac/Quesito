@@ -101,8 +101,8 @@ for row in rows:
         with col:
             # Azul pastel para vales disponibles y usados
             if usado:
-                bg = "#DCE6F0"   # azul pastel apagado
-                txt = "#6B7A8C"  # gris-azulado
+                bg = "#f3f3f3"   # azul pastel apagado
+                txt = "#777"  # gris-azulado
                 extra = '<p style="margin:0; margin-top:10px; font-size:0.85rem; color:#6B7A8C;">Ya has usado este vale.</p>'
             else:
                 bg = "#E6F0FA"   # azul pastel claro
