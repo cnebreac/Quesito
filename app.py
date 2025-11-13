@@ -9,17 +9,18 @@ st.set_page_config(page_title="Vales contigo", page_icon="💙", layout="centere
 # Definición de vales
 # =========================
 VALES = [
-    {"id": 0, "titulo": "Abrazo largo", "texto": "Vale por un abrazo largo que arregla el día."},
-    {"id": 1, "titulo": "Charla tranquila", "texto": "Vale por una conversación sin prisas y sin móviles."},
-    {"id": 2, "titulo": "Peli elegida por ti", "texto": "Vale por elegir tú la peli, aunque sea malísima."},
-    {"id": 3, "titulo": "Masaje", "texto": "Vale por un masaje de 10 minutos donde tú elijas."},
-    {"id": 4, "titulo": "Paseo juntos", "texto": "Vale por un paseo para desconectar del mundo."},
-    {"id": 5, "titulo": "Merienda sorpresa", "texto": "Vale por una merienda improvisada preparada por mí."},
-    {"id": 6, "titulo": "Reinicio del día", "texto": "Vale por borrar lo malo y seguir juntos."},
-    {"id": 7, "titulo": "Mimos ilimitados", "texto": "Vale por un rato de mimos sin límite de tiempo."},
-    {"id": 8, "titulo": "Confesión pendiente", "texto": "Vale por contarte algo bonito que aún no sabes."},
-    {"id": 9, "titulo": "Cita especial", "texto": "Vale por una cita sencilla pero muy tú y yo."},
+    {"id": 0, "titulo": "Regalo hecho a mano", "texto": "Vale por un regalo hecho por mí, con cariño y dedicación."},
+    {"id": 1, "titulo": "1x1", "texto": "Vale por un partido 1x1. Sin excusas, con pique y risas aseguradas."},
+    {"id": 2, "titulo": "Merienda sorpresa", "texto": "Vale por una merienda sorpresa preparada por mí."},
+    {"id": 3, "titulo": "Abrazo largo", "texto": "Vale por un abrazo largo que arregla cualquier día."},
+    {"id": 4, "titulo": "Mimos ilimitados", "texto": "Vale por una sesión de mimos sin límite de tiempo."},
+    {"id": 5, "titulo": "Restaurante nuevo", "texto": "Vale por probar un restaurante nuevo juntos."},
+    {"id": 6, "titulo": "Carta escrita a mano", "texto": "Vale por una carta escrita a mano, de esas que se guardan."},
+    {"id": 7, "titulo": "Tú eliges el plan", "texto": "Vale por elegir tú el plan que quieras, sin rechistar."},
+    {"id": 8, "titulo": "Un beso cada vez que sonrías", "texto": "Vale por un beso cada vez que sonrías (sin límite de usos)."},
+    {"id": 9, "titulo": "Día sin discutir", "texto": "Vale por un día sin discutir, aunque me lleves la contraria (un poco 😅)."},
 ]
+
 
 # =========================
 # Funciones con PIN / JSON
