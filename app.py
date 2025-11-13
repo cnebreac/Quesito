@@ -46,7 +46,7 @@ def guardar_estado(pin: str, vales_usados: set):
         json.dump({"vales_usados": list(vales_usados)}, f, ensure_ascii=False, indent=2)
 
 # =========================
-# Pantalla de PIN
+# Pantalla de PIN (fijo = 'quesito')
 # =========================
 
 if "pin" not in st.session_state:
@@ -88,7 +88,7 @@ st.divider()
 
 n_cols = 2
 ids = [v["id"] for v in VALES]
-rows = [ids[i:i+n_cols] for i in range(0, len(ids), n_cols)]
+rows = [ids[i:i + n_cols] for i in range(0, len(ids), n_cols)]
 
 for row in rows:
     cols = st.columns(len(row))
@@ -98,25 +98,17 @@ for row in rows:
         usado = vid in vales_usados
         seleccionado = st.session_state.vale_a_confirmar == vid
 
-        # ------------ TARJETA ------------
         with col:
             # Azul pastel para vales disponibles y usados
             if usado:
                 bg = "#DCE6F0"   # azul pastel apagado
                 txt = "#6B7A8C"  # gris-azulado
-                extra = """
-                <p style="
-                    margin: 0;
-                    margin-top: 10px;
-                    font-size: 0.85rem;
-                    color: #6B7A8C;
-                ">Ya has usado este vale.</p>
-                """
+                extra = '<p style="margin:0; margin-top:10px; font-size:0.85rem; color:#6B7A8C;">Ya has usado este vale.</p>'
             else:
                 bg = "#E6F0FA"   # azul pastel claro
                 txt = "#1F3B57"  # azul suave oscuro
                 extra = ""
-        
+
             html_card = f"""
             <div style="
                 border-radius: 14px;
@@ -124,8 +116,8 @@ for row in rows:
                 border: 1px solid #b8c6d9;
                 box-shadow: 0 0 10px rgba(0,0,0,0.03);
                 background-color: {bg};
-                min-height: 180px;       /* altura mínima para todas */
-                margin-bottom: 20px;     /* espacio extra entre tarjeta y la siguiente */
+                min-height: 180px;
+                margin-bottom: 20px;
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
@@ -134,13 +126,11 @@ for row in rows:
                     <h4 style="margin:0 0 .5rem 0; color:{txt};">{vale['titulo']}</h4>
                     <p style="margin:0 0 .75rem 0; color:{txt};">{vale['texto']}</p>
                 </div>
-        
                 {extra}
             </div>
             """
-        
-            st.markdown(html_card, unsafe_allow_html=True)
 
+            st.markdown(html_card, unsafe_allow_html=True)
 
             # ------------ BOTÓN USAR ------------
             if not usado and not seleccionado:
