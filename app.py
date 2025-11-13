@@ -10,14 +10,14 @@ st.set_page_config(page_title="Vales contigo", page_icon="💙", layout="centere
 # =========================
 VALES = [
     {"id": 0, "titulo": "Regalo hecho a mano", "texto": "Vale por un regalo hecho por mí, con cariño y dedicación."},
-    {"id": 8, "titulo": "1x1", "texto": "Vale por un partido 1x1. Sin excusas, con pique y risas aseguradas."},
+    {"id": 1, "titulo": "1x1", "texto": "Vale por un partido 1x1. Sin excusas, con pique y risas aseguradas."},
     {"id": 2, "titulo": "Merienda sorpresa", "texto": "Vale por una merienda sorpresa preparada por mí."},
     {"id": 3, "titulo": "Abrazo largo", "texto": "Vale por un abrazo largo que arregla cualquier día."},
     {"id": 4, "titulo": "Mimos ilimitados", "texto": "Vale por una sesión de mimos sin límite de tiempo."},
     {"id": 5, "titulo": "Restaurante nuevo", "texto": "Vale por probar un restaurante nuevo juntos."},
     {"id": 6, "titulo": "Carta escrita a mano", "texto": "Vale por una carta escrita a mano, de esas que se guardan."},
     {"id": 7, "titulo": "Tú eliges el plan", "texto": "Vale por elegir tú el plan que quieras, sin rechistar."},
-    {"id": 1, "titulo": "Un beso cada vez que sonrías", "texto": "Vale por un beso cada vez que sonrías (sin límite de usos)."},
+    {"id": 8, "titulo": "Un beso cada vez que sonrías", "texto": "Vale por un beso cada vez que sonrías (sin límite de usos)."},
     {"id": 9, "titulo": "Día sin discutir", "texto": "Vale por un día sin discutir, aunque me lleves la contraria (un poco 😅)."},
 ]
 
