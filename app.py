@@ -69,7 +69,7 @@ if st.session_state.pin is None:
             st.warning("El PIN no puede estar vacío.")
         else:
             st.session_state.pin = pin_input
-            st.experimental_rerun()
+            st.rerun()   # <--- antes era st.experimental_rerun()
     st.stop()
 
 pin = st.session_state.pin
@@ -140,7 +140,6 @@ for row in rows:
             if not usado:
                 if st.button(f"🧀 Usar vale", key=f"usar_{vid}"):
                     st.session_state.vale_a_confirmar = vid
-
             else:
                 st.markdown(
                     "<span style='font-size:0.8rem;color:#777;'>Ya has usado este vale 🧀</span>",
@@ -172,9 +171,8 @@ if vid_conf is not None and vid_conf not in vales_usados:
             guardar_estado(pin, vales_usados)
             st.session_state.vale_a_confirmar = None
             st.success("Vale usado 🧀✨")
-            st.experimental_rerun()
+            st.rerun()   # <--- antes era st.experimental_rerun()
 
     with c2:
         if st.button("No, cancelar"):
             st.session_state.vale_a_confirmar = None
-
